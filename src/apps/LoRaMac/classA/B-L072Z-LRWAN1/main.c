@@ -37,65 +37,31 @@
 #include "LoRaMacTest.h"
 #include "delay.h"
 
-#if LORAWAN_CONFIG_MANUAL==true 
-/*!
- * Defines the application data transmission duty cycle. Value in [ms].
- */
-#define APP_TX_DUTYCYCLE             5000
 
-/*!
- * Defines a random delay for application data transmission duty cycle. 1s,
- * value in [ms].
- */
-#define APP_TX_DUTYCYCLE_RND         1000
 
-/*!
- * Default datarate
- */
-#define LORAWAN_DEFAULT_DATARATE     DR_2
 
-/*!
- * LoRaWAN confirmed messages
- */
-#define LORAWAN_CONFIRMED_MSG_ON     false
-
-/*!
- * LoRaWAN sub-band
- */
-#define SUBBAND                      2
-
-/*!
- * LoRaWAN Adaptive Data Rate
- *
- * \remark Please note that when ADR is enabled the end-device should be static
- */
-#define LORAWAN_ADR_ON               1
-
-/*!
- * LoRaWAN application port
- */
-#define LORAWAN_APP_PORT             2
-
-/*!
- * LoRaWAN ETSI duty cycle control enable/disable
- */
-#define LORAWAN_DUTYCYCLE_ON         false
-#endif
 
 static uint8_t DevEui[] = LORAWAN_DEVICE_EUI;
+
 static uint8_t JoinEui[] = LORAWAN_JOIN_EUI;
+
 #if( ABP_ACTIVATION_LRWAN_VERSION == ABP_ACTIVATION_LRWAN_VERSION_V10x )
 static uint8_t GenAppKey[] = LORAWAN_GEN_APP_KEY;
 #else
+
 static uint8_t AppKey[] = LORAWAN_APP_KEY;
 #endif
+
 static uint8_t NwkKey[] = LORAWAN_NWK_KEY;
 
 #if( OVER_THE_AIR_ACTIVATION == 0 )
 
 static uint8_t FNwkSIntKey[] = LORAWAN_F_NWK_S_INT_KEY;
+
 static uint8_t SNwkSIntKey[] = LORAWAN_S_NWK_S_INT_KEY;
+
 static uint8_t NwkSEncKey[] = LORAWAN_NWK_S_ENC_KEY;
+
 static uint8_t AppSKey[] = LORAWAN_APP_S_KEY;
 
 /*!
@@ -105,16 +71,20 @@ static uint32_t DevAddr = LORAWAN_DEVICE_ADDRESS;
 
 #endif
 
+
 /*!
  * Application port
  */
 static uint8_t AppPort = LORAWAN_APP_PORT;
 
+
 /*!
  * User application data size
  */
 static uint8_t AppDataSize = 1;
+
 static uint8_t AppDataSizeBackup = 1;
+
 
 /*!
  * User application data buffer size
@@ -126,52 +96,69 @@ static uint8_t AppDataSizeBackup = 1;
  */
 static uint8_t AppDataBuffer[LORAWAN_APP_DATA_MAX_SIZE];
 
+
 /*!
  * Indicates if the node is sending confirmed or unconfirmed messages
  */
 static uint8_t IsTxConfirmed = LORAWAN_CONFIRMED_MSG_ON;
+
 
 /*!
  * Defines the application data transmission duty cycle
  */
 static uint32_t TxDutyCycleTime;
 
+
 /*!
  * Timer to handle the application data transmission duty cycle
  */
 static TimerEvent_t TxNextPacketTimer;
+
 
 /*!
  * Specifies the state of the application LED
  */
 static bool AppLedStateOn = false;
 
+
 /*!
  * Timer to handle the state of LED1
  */
 static TimerEvent_t Led1Timer;
 
+
 /*!
  * Timer to handle the state of LED3
+ * 
  */
 static TimerEvent_t Led3Timer;
 
+
+
 /*!
  * Indicates if a new packet can be sent
+ * 
  */
 static bool NextTx = true;
+
+
 
 /*!
  * Indicates if LoRaMacProcess call is pending.
  * 
+ * 
  * \warning If variable is equal to 0 then the MCU can be set in low power mode
+ * 
  */
 static uint8_t IsMacProcessPending = 0;
+
 
 /*
  * Button objects
  */
 extern Gpio_t BUTTON;
+
+
 
 /*!
  * Device states
@@ -185,6 +172,8 @@ static enum eDeviceState
     DEVICE_STATE_CYCLE,
     DEVICE_STATE_SLEEP
 }DeviceState;
+
+
 
 /*!
  * LoRaWAN compliance tests support data
@@ -203,8 +192,12 @@ struct ComplianceTest_s
     uint8_t NbGateways;
 }ComplianceTest;
 
+
+
 /*!
  *
+ * 
+ * 
  */
 typedef enum
 {
@@ -212,8 +205,11 @@ typedef enum
     LORAMAC_HANDLER_CONFIRMED_MSG = !LORAMAC_HANDLER_UNCONFIRMED_MSG
 }LoRaMacHandlerMsgTypes_t;
 
+
+
 /*!
  * Application data structure
+ * 
  */
 typedef struct LoRaMacHandlerAppData_s
 {
@@ -223,6 +219,8 @@ typedef struct LoRaMacHandlerAppData_s
     uint8_t *Buffer;
 }LoRaMacHandlerAppData_t;
 
+
+
 LoRaMacHandlerAppData_t AppData =
 {
     .MsgType = LORAMAC_HANDLER_UNCONFIRMED_MSG,
@@ -230,6 +228,8 @@ LoRaMacHandlerAppData_t AppData =
     .BufferSize = 0,
     .Port = 0
 };
+
+
 
 /*!
  * LED GPIO pins objects
