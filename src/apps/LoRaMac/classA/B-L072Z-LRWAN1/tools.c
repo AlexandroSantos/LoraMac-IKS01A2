@@ -234,10 +234,10 @@ uint8_t HTS221_begin(){
 	GpioInit( &SDA, PB_9, PIN_OUTPUT,  PIN_OPEN_DRAIN, PIN_NO_PULL, 1);
 	GpioInit( &SCL, PB_8, PIN_OUTPUT,  PIN_OPEN_DRAIN, PIN_NO_PULL, 1);	
 	if (ReadI2cSW_8bits(HTS221_ADDRESS, HTS221_WHO_AM_I) != HTS221_DEVICE_ID) {		 
-		printf("\nDispositivo HTS221 desconectado!!!\n");
+		printf("\nDispositivo HTS221 (Sensor de temperatura e umidade) desconectado!!!\n");
 		return 0;
 	}
-	printf("\nDispositivo HTS221 conectado!!!\n");
+	printf("\nDispositivo HTS221 (Sensor de temperatura e umidade) conectado!!!\n");
 	HTS221_Read_Calibration();		
 	WriteI2cSW_8bits(HTS221_ADDRESS, HTS221_CTRL1,0x85);		
 	return 1;
@@ -292,12 +292,12 @@ uint8_t LPS22HB_begin(){
 	GpioInit( &SDA, PB_9, PIN_OUTPUT,  PIN_OPEN_DRAIN, PIN_NO_PULL, 1);
 	GpioInit( &SCL, PB_8, PIN_OUTPUT,  PIN_OPEN_DRAIN, PIN_NO_PULL, 1);	
 	if (ReadI2cSW_8bits(LPS22HB_ADDRESS, LPS22HB_WHO_AM_I) != LPS22HB_DEVICE_ID) {		 
-		printf("\nDispositivo LPS22HB desconectado!!!\n");
+		printf("\nDispositivo LPS22HB (Sensor de pressao atmosferica) desconectado!!!\n");
 		return 0;
 	}
 	WriteI2cSW_8bits(LPS22HB_ADDRESS,LPS22HB_RES_CONF,0x01);
 	WriteI2cSW_8bits(LPS22HB_ADDRESS,LPS22HB_CTRL_REG1,0x32);
-	printf("\nDispositivo LPS22HB conectado!!!\n");	
+	printf("\nDispositivo LPS22HB (Sensor de pressao atmosferica) conectado!!!\n");	
 	return 1;
 }
 
@@ -332,4 +332,29 @@ uint16_t LPS22HB_Temperature_Hex(){
 	return (value);
 }
 
+//*************************LSM303AGR function*******************************
+uint8_t LSM303AGR_begin(){	
+	GpioInit( &SDA, PB_9, PIN_OUTPUT,  PIN_OPEN_DRAIN, PIN_NO_PULL, 1);
+	GpioInit( &SCL, PB_8, PIN_OUTPUT,  PIN_OPEN_DRAIN, PIN_NO_PULL, 1);	
+	if ((ReadI2cSW_8bits(LSM303AGR_ADDRESS_A, LSM303AGR_WHO_AM_I_A) != LSM303AGR_DEVICE_ID_A) || (ReadI2cSW_8bits(LSM303AGR_ADDRESS_M, LSM303AGR_WHO_AM_I_M) != LSM303AGR_DEVICE_ID_M)){		 
+		printf("\nDispositivo LSM303AGR (Giroscopio e acelerometro) desconectado!!!\n");
+		return 0;
+	}
+	
+	printf("\nDispositivo LSM303AGR (Giroscopio e acelerometro) conectado!!!\n");	
+	return 1;
+}
+
+//*************************LSM6DSL function*******************************
+uint8_t LSM6DSL_begin(){	
+	GpioInit( &SDA, PB_9, PIN_OUTPUT,  PIN_OPEN_DRAIN, PIN_NO_PULL, 1);
+	GpioInit( &SCL, PB_8, PIN_OUTPUT,  PIN_OPEN_DRAIN, PIN_NO_PULL, 1);	
+	if (ReadI2cSW_8bits(LSM6DSL_ADDRESS, LSM6DSL_WHO_AM_I) != LSM6DSL_DEVICE_ID) {		 
+		printf("\nDispositivo LSM6DSL (Acelerometro e magnetometro) desconectado!!!\n");
+		return 0;
+	}
+
+	printf("\nDispositivo LSM6DSL (Acelerometro e magnetometro) conectado!!!\n");	
+	return 1;
+}
 
